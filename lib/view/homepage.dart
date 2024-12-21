@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:medicine_reminder/model/user_model.dart';
+import 'package:medicine_reminder/view/medicineschedule.dart'; // Import the schedule page
 import 'package:medicine_reminder/view/addmedicine.dart';
-import 'package:medicine_reminder/view/profile.dart';// Import the Add Medicine page
 
 class HealthDashboard extends StatefulWidget {
   @override
@@ -9,6 +10,7 @@ class HealthDashboard extends StatefulWidget {
 
 class _HealthDashboardState extends State<HealthDashboard> {
   int _selectedIndex = 0;
+  List<Medicine> medicines = [];
 
   // List of pages to navigate between
   late final List<Widget> _pages;
@@ -17,9 +19,9 @@ class _HealthDashboardState extends State<HealthDashboard> {
   void initState() {
     super.initState();
     _pages = [
-      HomePage(), // Home page content
+      HomePage(medicines: medicines), // Home page content
       AddMedicinePage(), // Add Medicine page
-      ProfilePage(), // Profile page
+      SchedulePage(), // Profile page
     ];
   }
 
@@ -27,6 +29,18 @@ class _HealthDashboardState extends State<HealthDashboard> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  Future<void> _addMedicine() async {
+    final newMedicine = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddMedicinePage()),
+    );
+    if (newMedicine != null) {
+      setState(() {
+        medicines.add(newMedicine);
+      });
+    }
   }
 
   @override
@@ -67,6 +81,10 @@ class _HealthDashboardState extends State<HealthDashboard> {
 }
 
 class HomePage extends StatelessWidget {
+  final List<Medicine> medicines;
+
+  HomePage({required this.medicines});
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -104,63 +122,39 @@ class HomePage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              // Urgent Care Button
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.orange[100],
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.warning, color: Colors.orange, size: 30),
-                        const SizedBox(width: 12),
-                        const Text(
-                          'Urgent Care',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                    const Icon(Icons.arrow_forward, color: Colors.orange),
-                  ],
-                ),
-              ),
+              // Your Medicines Section
               const SizedBox(height: 20),
-
-              // Services Section
               const Text(
-                'Our Services',
+                'Your Medicines',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: const [
-                  ServiceItem(icon: Icons.medical_services, label: 'Medicines'),
-                  ServiceItem(icon: Icons.local_hospital, label: 'Ambulance'),
-                ],
+              medicines.isEmpty
+                  ? const Text('No medicines added yet.')
+                  : ListView.builder(
+                shrinkWrap: true,
+                itemCount: medicines.length,
+                itemBuilder: (context, index) {
+                  final medicine = medicines[index];
+                  return ListTile(
+                    title: Text(medicine.name),
+                    subtitle: Text('${medicine.type}, ${medicine.amount}'),
+                    trailing: Icon(Icons.arrow_forward),
+                    onTap: () {
+                      // Navigate to Schedule Page with medicine details
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SchedulePage(
+                            startDate: medicine.startDate,
+                            finishDate: medicine.finishDate,
+                            selectedDays: medicine.days,
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
-              const SizedBox(height: 20),
-
-              // Appointment Section
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text(
-                    'Appointment',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    'See All',
-                    style: TextStyle(fontSize: 16, color: Colors.blue),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              AppointmentCard(),
             ],
           ),
         ),
@@ -233,22 +227,9 @@ class AppointmentCard extends StatelessWidget {
                   ),
                 ],
               )
-
             ],
           ),
         ],
-      ),
-    );
-  }
-}
-
-class CustomerDashboard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: const Text(
-        'Customer Profile Page',
-        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
       ),
     );
   }
