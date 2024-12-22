@@ -62,10 +62,19 @@ class _HealthDashboardState extends State<HealthDashboard> {
           mainAxisAlignment: MainAxisAlignment.end, // Align icons to the right
           children: [
             IconButton(
-              icon: Icon(Icons.notifications, color: Colors.white),
+              icon: Icon(Icons.notifications, color: Colors.white, size: 40),
               onPressed: () {
-                print('Set Reminder');
+                // Navigate to Notifications Page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => NotificationsPage()),
+                );
               },
+            ),
+            SizedBox(height: 10), // Add spacing between the icon and text
+            Text(
+              'Reminder',
+              style: TextStyle(fontSize: 16),
             ),
           ],
         ),
@@ -543,7 +552,46 @@ class MainPage extends StatelessWidget {
     );
   }
 }
-
+class NotificationsPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        elevation: 0, // Removes shadow for a clean look
+        title: Center(
+          child: Text(
+            'Notifications',
+            style: TextStyle(color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 20), // Black text for better contrast
+          ),
+        ),
+      ),
+      body: Container(
+        color: Colors.white,
+        child:Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min, // Ensures minimal height for the column
+          children: [
+            SizedBox(height: 20), // Spacing below the line
+            Icon(
+              Icons.notifications_off,
+              color: Colors.grey,
+              size: 80,
+            ),
+            SizedBox(height: 5), // Spacing between icon and text
+            Text(
+              'No notifications yet',
+              style: TextStyle(fontSize: 18, color: Colors.grey),
+            ),
+          ],
+        ),
+      ),
+      ),
+    );
+  }
+}
 
 
 
