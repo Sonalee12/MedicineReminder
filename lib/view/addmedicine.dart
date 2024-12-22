@@ -15,7 +15,7 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
   String? selectedType; // Track selected type (Tablet/Capsule/Liquid)
   String? selectedAmount; // Track selected amount (1 Tablet, 2 Capsules, etc.)
   TextEditingController medicineNameController = TextEditingController();
-  TextEditingController strengthController = TextEditingController();
+  // TextEditingController strengthController = TextEditingController();
   TextEditingController frequencyController = TextEditingController();
   TimeOfDay? selectedMedicineTime;
   String? imagePath;
@@ -29,7 +29,8 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
+        child: Container(
+          color: Colors.white,
           padding: const EdgeInsets.all(16.0),
           child: SingleChildScrollView(
             child: Column(
@@ -65,8 +66,8 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
                 buildTextField(controller: medicineNameController, hint: 'Enter Medicine Name'),
 
                 // Strength Field
-                buildLabel('Strength'),
-                buildTextField(controller: strengthController, hint: 'Enter The Strength'),
+                // buildLabel('Strength'),
+                // buildTextField(controller: strengthController, hint: 'Enter The Strength'),
 
                 // When To Take Field
                 buildLabel('When To Take'),
@@ -113,29 +114,6 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
                 }, finishDate),
 
                 // Days of Week Selection
-                buildLabel('Days'),
-                Wrap(
-                  spacing: 8,
-                  children: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-                      .asMap()
-                      .map((index, day) {
-                    return MapEntry(
-                      index,
-                      ChoiceChip(
-                        label: Text(day),
-                        selected: selectedDays[index],
-                        onSelected: (selected) {
-                          setState(() {
-                            selectedDays[index] = selected;
-                          });
-                        },
-                      ),
-                    );
-                  })
-                      .values
-                      .toList(),
-                ),
-
                 buildLabel('Set Reminder Time'),
                 InkWell(
                   onTap: () async {
@@ -177,7 +155,7 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        if (medicineNameController.text.isNotEmpty && strengthController.text.isNotEmpty) {
+                        if (medicineNameController.text.isNotEmpty) {
                           // Redirect to the schedule page with selected details
                           Navigator.push(
                             context,
@@ -213,6 +191,7 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
                       },
                       child: Text('Make Schedule'),
                       style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
                         padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                       ),
                     ),

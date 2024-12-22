@@ -4,6 +4,7 @@ import 'package:medicine_reminder/view/UrgentCarePage.dart';
 import 'package:medicine_reminder/view/medicineschedule.dart'; // Import the schedule page
 import 'package:medicine_reminder/view/addmedicine.dart'; // Import the Add Medicine page
 import 'package:medicine_reminder/view/profile.dart';
+import 'package:medicine_reminder/view/addappointment.dart';
 
 
 
@@ -53,13 +54,23 @@ class _HealthDashboardState extends State<HealthDashboard> {
       backgroundColor: Colors.white,
       body: _pages[_selectedIndex], // Display the page based on selected index
       appBar: AppBar(
-        leading: Icon(Icons.medical_services),
-        title: Text(
-          ['Dashboard', 'Add Medicine', 'Customer Profile'][_selectedIndex],
+        title: Text(['Dasboard', 'Add Medicine', 'Customer Profile'][_selectedIndex],
         ),
-
         backgroundColor: Colors.blue,
+        leading: Icon(Icons.medical_services), // Left side icon
+        flexibleSpace: Row(
+          mainAxisAlignment: MainAxisAlignment.end, // Align icons to the right
+          children: [
+            IconButton(
+              icon: Icon(Icons.notifications, color: Colors.white),
+              onPressed: () {
+                print('Set Reminder');
+              },
+            ),
+          ],
+        ),
       ),
+
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
@@ -132,7 +143,7 @@ class HomePage extends StatelessWidget {
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.orange[100],
+                    color: Colors.orangeAccent,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   padding: const EdgeInsets.all(12),
@@ -141,12 +152,12 @@ class HomePage extends StatelessWidget {
                     children: const [
                       Row(
                         children: [
-                          Icon(Icons.warning, color: Colors.orange, size: 30),
+                          Icon(Icons.warning, color: Colors.red, size: 30),
                           SizedBox(width: 12),
                           Text('Urgent Care', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                         ],
                       ),
-                      Icon(Icons.arrow_forward, color: Colors.orange),
+                      Icon(Icons.arrow_forward, color: Colors.red),
                     ],
                   ),
                 ),
@@ -163,7 +174,7 @@ class HomePage extends StatelessWidget {
                 children: const [
                   ServiceItem(icon: Icons.medical_services, label: 'Medicines'),
                   ServiceItem(icon: Icons.calendar_today, label: 'Appointment'),
-                  ServiceItem(icon: Icons.local_hospital, label: 'Ambulance'),
+                  ServiceItem(icon: Icons.local_hospital, label: 'Emergency'),
                 ],
               ),
               const SizedBox(height: 20),
@@ -171,17 +182,29 @@ class HomePage extends StatelessWidget {
               // Appointment Section
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
+                children: [
+                  // Text widget for Appointment title
                   Text(
                     'Appointment',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  Text(
-                    'See All',
-                    style: TextStyle(fontSize: 16, color: Colors.blue),
+
+                  // IconButton to add an appointment
+                  IconButton(
+                    icon: Icon(Icons.add_circle, color: Colors.blue),
+                    onPressed: () {
+                      // Navigate to AddAppointmentPage
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddAppointmentPage(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
+
               const SizedBox(height: 12),
               AppointmentCard(), // Assuming AppointmentCard is defined elsewhere
 
@@ -193,7 +216,7 @@ class HomePage extends StatelessWidget {
                 child: Container(
                   padding: EdgeInsets.all(16.0), // Padding inside the container
                   decoration: BoxDecoration(
-                    color: Colors.white, // Background color for the container
+                    color: Colors.blue, // Background color for the container
                     borderRadius: BorderRadius.circular(12.0), // Same as Material for consistency
                   ),
                   child: Column(
@@ -203,7 +226,7 @@ class HomePage extends StatelessWidget {
                         'Your Medicines',
                         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 12, width: double.infinity),
                       medicines.isEmpty
                           ? const Text('No medicines added yet.')
                           : ListView.builder(
@@ -217,7 +240,11 @@ class HomePage extends StatelessWidget {
                             subtitle: Text('${medicine.type}, ${medicine.amount}'),
                             trailing: Icon(Icons.arrow_forward),
                             onTap: () {
-                              // Navigate to a detail page or perform an action on the selected medicine
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => SchedulePage(selectedDays: []),
+                                ),
+                              );
                             },
                           );
                         },
@@ -247,7 +274,7 @@ class ServiceItem extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: Colors.blue[50],
+            color: Colors.white,
             borderRadius: BorderRadius.circular(12),
           ),
           padding: const EdgeInsets.all(16),
@@ -280,14 +307,14 @@ class AppointmentCard extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey[100],
+          color: Colors.blue,
           borderRadius: BorderRadius.circular(12),
         ),
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
             CircleAvatar(
-              backgroundImage: NetworkImage('https://via.placeholder.com/150'),
+              backgroundImage: AssetImage('appointment.jpg'),
               radius: 25,
             ),
             const SizedBox(width: 12),
@@ -296,11 +323,11 @@ class AppointmentCard extends StatelessWidget {
               children: [
                 const Text(
                   'Dr. Prem Tiwari',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, ),
                 ),
                 Text(
                   'Orthopedic',
-                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                  style: TextStyle(fontSize: 14, color: Colors.black),
                 ),
                 const SizedBox(height: 8),
                 Row(
@@ -309,10 +336,10 @@ class AppointmentCard extends StatelessWidget {
                     SizedBox(width: 4),
                     Text(
                       'Wed Nov 20 - 8:00 AM',
-                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                      style: TextStyle(fontSize: 14, color: Colors.black),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ],
@@ -338,57 +365,185 @@ class AppointmentDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('$doctorName - Appointment')),
+      appBar: AppBar(
+        title: Text('$doctorName - Appointment'),
+        backgroundColor: Colors.blueAccent,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildInfoCard(Icons.account_circle, 'Doctor', doctorName),
+              const SizedBox(height: 16),
+              _buildInfoCard(Icons.medical_services, 'Specialty', specialty),
+              const SizedBox(height: 16),
+              _buildInfoCard(Icons.access_time, 'Appointment Time', appointmentTime),
+              const SizedBox(height: 16),
+              _buildInfoCard(Icons.calendar_today, 'Appointment Date', appointmentDate),
+              const SizedBox(height: 40),
+            ],
+          ),
+        ),
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 20.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text('Doctor: $doctorName', style: TextStyle(fontSize: 20)),
-            Text('Specialty: $specialty', style: TextStyle(fontSize: 16)),
-            Text('Appointment Time: $appointmentTime', style: TextStyle(fontSize: 16)),
-            Text('Appointment Date: $appointmentDate', style: TextStyle(fontSize: 16)),
+            // Edit Button
+            FloatingActionButton(
+              onPressed: () {
+                // Handle Edit action, navigate to edit page or show a dialog
+                print('Edit appointment');
+              },
+              child: Icon(Icons.edit),
+              backgroundColor: Colors.blueAccent,
+              heroTag: null, // Avoid conflicts if there are multiple FABs
+            ),
+            const SizedBox(width: 16),
+            // Delete Button
+            FloatingActionButton(
+              onPressed: () {
+                // Handle Delete action, confirm and delete the appointment
+                print('Delete appointment');
+              },
+              child: Icon(Icons.delete),
+              backgroundColor: Colors.red,
+              heroTag: null, // Similar to the Edit button to avoid conflict
+            ),
           ],
         ),
       ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          // Edit Button
-          FloatingActionButton(
-            onPressed: () {
-              // Handle Edit action, navigate to edit page or show a dialog
-              print('Edit appointment');
-            },
-            child: Icon(Icons.edit),
-            heroTag: null, // This is used for tag to avoid conflicts if there are multiple FABs
-          ),
-          const SizedBox(width: 16),
-          // Delete Button
-          FloatingActionButton(
-            onPressed: () {
-              // Handle Delete action, confirm and delete the appointment
-              print('Delete appointment');
-            },
-            child: Icon(Icons.delete),
-            backgroundColor: Colors.red,
-            heroTag: null, // Similar to the Edit button to avoid conflict
-          ),
-        ],
+    );
+  }
+
+  // Helper function to create info cards with icons and text
+  Widget _buildInfoCard(IconData icon, String label, String value) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              size: 32,
+              color: Colors.blueAccent, // Icon color for visual appeal
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black54,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    value,
+                    style: TextStyle(fontSize: 18, color: Colors.black87),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-
-class CustomerDashboard extends StatelessWidget {
+class UrgentCarePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: const Text(
-        'Customer Profile Page',
-        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Add Guardian Details'),
+        backgroundColor: Colors.white,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              decoration: InputDecoration(
+                labelText: 'Guardian Name',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 16),
+            TextField(
+              decoration: InputDecoration(
+                labelText: 'Contact Number',
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.phone,
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                // Add save logic here
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Details Saved!')),
+                );
+              },
+              child: Text('Save'),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
+
+class MainPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => UrgentCarePage()),
+            );
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.orangeAccent,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: const [
+                    Icon(Icons.warning, color: Colors.red, size: 30),
+                    SizedBox(width: 12),
+                    Text('Urgent Care',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+                const Icon(Icons.arrow_forward, color: Colors.red),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
